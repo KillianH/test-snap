@@ -6,6 +6,7 @@ import {
   ReconnectButton,
   SendHelloButton,
   Card,
+  GetCasperAccountButton,
 } from '../components';
 import { defaultSnapOrigin } from '../config';
 import {
@@ -114,6 +115,11 @@ const Index = () => {
     await invokeSnap({ method: 'hello' });
   };
 
+  const handleGetCSPRAccountClick = async () => {
+    const test = await invokeSnap({ method: 'casper_getAccount' });
+    console.log(test);
+  };
+
   return (
     <Container>
       <Heading>
@@ -179,6 +185,26 @@ const Index = () => {
             button: (
               <SendHelloButton
                 onClick={handleSendHelloClick}
+                disabled={!installedSnap}
+              />
+            ),
+          }}
+          disabled={!installedSnap}
+          fullWidth={
+            isMetaMaskReady &&
+            Boolean(installedSnap) &&
+            !shouldDisplayReconnectButton(installedSnap)
+          }
+        />
+
+        <Card
+          content={{
+            title: 'Send Hello message',
+            description:
+              'Display a custom message within a confirmation screen in MetaMask.',
+            button: (
+              <GetCasperAccountButton
+                onClick={handleGetCSPRAccountClick}
                 disabled={!installedSnap}
               />
             ),

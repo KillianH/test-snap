@@ -1,5 +1,35 @@
+import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import { Box, Text, Bold } from '@metamask/snaps-sdk/jsx';
+import { PublicKey } from 'casper-js-sdk';
+
+/**
+ * Get casper address.
+ *
+ * @param addressIndex - Address index.
+ * @returns The public key hex of the user.
+ */
+async function getCSPRAddress(addressIndex = 0) {
+  const bip44Node = await snap.request({
+    method: 'snap_getBip44Entropy',
+    params: {
+      coinType: 506,
+    },
+  });
+  const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
+  const addressKey = await bip44Nodeaddr(addressIndex);
+  try {
+    return {
+      publicKey: PublicKey.fromBytes(
+        addressKey.compressedPublicKeyBytes,
+      ).result.toHex(),
+    };
+  } catch {
+    return {
+      error: `Unsupported curve. Received ${addressKey.curve}. Only Secp256K1 && Ed25519 are supported.`,
+    };
+  }
+}
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -16,6 +46,8 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
   request,
 }) => {
   switch (request.method) {
+    case 'casper_getAccount':
+      return getCSPRAddress();
     case 'hello':
       return snap.request({
         method: 'snap_dialog',

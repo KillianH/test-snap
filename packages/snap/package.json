@@ -27,7 +27,9 @@
     "test": "jest"
   },
   "dependencies": {
-    "@metamask/snaps-sdk": "^6.10.0"
+    "@metamask/key-tree": "^10.0.1",
+    "@metamask/snaps-sdk": "^6.10.0",
+    "casper-js-sdk": "5.0.0-rc5"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
