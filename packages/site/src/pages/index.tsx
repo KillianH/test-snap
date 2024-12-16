@@ -16,6 +16,8 @@ import {
   useRequestSnap,
 } from '../hooks';
 import { isLocalSnap, shouldDisplayReconnectButton } from '../utils';
+import { useState } from 'react';
+import { createLegacyDeploy, createTransaction } from '../utils/casperUtils';
 
 const Container = styled.div`
   display: flex;
@@ -24,6 +26,7 @@ const Container = styled.div`
   flex: 1;
   margin-top: 7.6rem;
   margin-bottom: 7.6rem;
+
   ${({ theme }) => theme.mediaQueries.small} {
     padding-left: 2.4rem;
     padding-right: 2.4rem;
@@ -48,6 +51,7 @@ const Subtitle = styled.p`
   font-weight: 500;
   margin-top: 0;
   margin-bottom: 0;
+
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
@@ -77,6 +81,7 @@ const Notice = styled.div`
   & > * {
     margin: 0;
   }
+
   ${({ theme }) => theme.mediaQueries.small} {
     margin-top: 1.2rem;
     padding: 1.6rem;
@@ -93,6 +98,7 @@ const ErrorMessage = styled.div`
   margin-top: 2.4rem;
   max-width: 60rem;
   width: 100%;
+
   ${({ theme }) => theme.mediaQueries.small} {
     padding: 1.6rem;
     margin-bottom: 1.2rem;
@@ -111,13 +117,36 @@ const Index = () => {
     ? isFlask
     : snapsDetected;
 
-  const handleSendHelloClick = async () => {
-    await invokeSnap({ method: 'hello' });
+  const [accountInputValue, setAccountInputValue] = useState('0');
+
+  const [accountResultValue, setAccountResultValue] = useState('');
+
+  const handleAccountInputChange = (event: any) => {
+    setAccountInputValue(event.target.value);
   };
 
   const handleGetCSPRAccountClick = async () => {
-    const test = await invokeSnap({ method: 'casper_getAccount' });
-    console.log(test);
+    const accountResult = await invokeSnap({
+      method: 'casper_getAccount',
+      params: { addressIndex: Number(accountInputValue) },
+    });
+    setAccountResultValue(accountResult.publicKey)
+  };
+
+  const handleSignLegacyDeploy = async () => {
+    const signLegacyDeployResult = await invokeSnap({
+      method: 'casper_sign',
+      params: { addressIndex: Number(accountInputValue), deployJson: createLegacyDeploy(accountResultValue) },
+    });
+    console.log(signLegacyDeployResult);
+  };
+
+  const handleSignTransaction = async () => {
+    const signTransactionResult = await invokeSnap({
+      method: 'casper_sign',
+      params: { addressIndex: Number(accountInputValue), deployJson: createTransaction(accountResultValue) },
+    });
+    console.log(signTransactionResult);
   };
 
   return (
@@ -177,14 +206,24 @@ const Index = () => {
             disabled={!installedSnap}
           />
         )}
+
         <Card
           content={{
-            title: 'Send Hello message',
-            description:
-              'Display a custom message within a confirmation screen in MetaMask.',
+            title: 'Get cspr account',
+            description: (
+              <>
+                <input
+                  title="Account"
+                  type="number"
+                  value={accountInputValue}
+                  onChange={handleAccountInputChange}
+                />
+                <p style={{ wordBreak: 'break-all' }}>{accountResultValue}</p>
+              </>
+            ),
             button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
+              <GetCasperAccountButton
+                onClick={handleGetCSPRAccountClick}
                 disabled={!installedSnap}
               />
             ),
@@ -196,15 +235,33 @@ const Index = () => {
             !shouldDisplayReconnectButton(installedSnap)
           }
         />
-
         <Card
           content={{
-            title: 'Send Hello message',
+            title: 'Sign legacy deploy',
             description:
-              'Display a custom message within a confirmation screen in MetaMask.',
+              'Sign legacy deploy',
             button: (
               <GetCasperAccountButton
-                onClick={handleGetCSPRAccountClick}
+                onClick={handleSignLegacyDeploy}
+                disabled={!installedSnap}
+              />
+            ),
+          }}
+          disabled={!installedSnap}
+          fullWidth={
+            isMetaMaskReady &&
+            Boolean(installedSnap) &&
+            !shouldDisplayReconnectButton(installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'Sign transaction',
+            description:
+              'Sign transaction',
+            button: (
+              <GetCasperAccountButton
+                onClick={handleSignTransaction}
                 disabled={!installedSnap}
               />
             ),
