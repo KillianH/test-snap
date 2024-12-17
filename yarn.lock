@@ -1690,6 +1690,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/js@npm:^9.11.0":
+  version: 9.17.0
+  resolution: "@eslint/js@npm:9.17.0"
+  checksum: b68a14ff518ffa12e3b85fa9c72b818faeff092285acfbf02da2d0fb12a681b76651638881e98845f2df2ed346ed0d33faeb1d9caac163daf232c223b7efe89c
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/common@npm:^3.2.0":
   version: 3.2.0
   resolution: "@ethereumjs/common@npm:3.2.0"
@@ -2639,13 +2646,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-browser@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "@metamask/eslint-config-browser@npm:12.1.0"
+"@metamask/eslint-config-browser@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@metamask/eslint-config-browser@npm:14.0.0"
+  dependencies:
+    "@eslint/js": ^9.11.0
+    globals: ^15.9.0
   peerDependencies:
-    "@metamask/eslint-config": ^12.0.0
-    eslint: ^8.27.0
-  checksum: a1d3035b0dd82aa66397e9c8916c45e1dc2d339c13dac385f7c90de09df943c313801538c0d955c2abf44a57008100874f8615d70f19188d8893b653cfe15485
+    "@metamask/eslint-config": ^14.0.0
+    eslint: ^9.11.0
+  checksum: 22f628799d6d2d6a537ffbb72ecf777632b1824ff87e81edcce77f1793b4617f20e185012c45020a75df308e895d5d88f125444ad7e6cb419d90e14368ca145a
   languageName: node
   linkType: hard
 
@@ -11443,6 +11453,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"globals@npm:^15.9.0":
+  version: 15.13.0
+  resolution: "globals@npm:15.13.0"
+  checksum: 3f98514ce25a21150b246fbd63aeaeb271a93b3340cf7f4f6e9934d3b37dbb4b0fddef9c470183097dcfd2e8757bb86bbae701588f0e376667d8d9d6f665db3b
+  languageName: node
+  linkType: hard
+
 "globalthis@npm:^1.0.4":
   version: 1.0.4
   resolution: "globalthis@npm:1.0.4"
@@ -17537,7 +17554,7 @@ __metadata:
   resolution: "site@workspace:packages/site"
   dependencies:
     "@metamask/eslint-config": ^12.2.0
-    "@metamask/eslint-config-browser": ^12.1.0
+    "@metamask/eslint-config-browser": ^14.0.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
